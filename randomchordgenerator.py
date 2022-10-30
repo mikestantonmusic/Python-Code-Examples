@@ -1,6 +1,6 @@
 def main():
     print('Welcome to the random chord generator 9000. Please enter the number of chords you wish to generate. \n'
-    'Please note that this program needs to be open the terminal or it may not work')
+    'Please note that this program needs to be open using python or it may not work')
     try:
         length = int(input("number of chords: "))
     except (ValueError):
