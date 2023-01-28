@@ -15,11 +15,13 @@ player_color = (0,0,0)
 player = pygame.Rect(0, 0, player_size, player_size)
 
 
-# Create dimensions for a line object
-obstacle_width = 3
-obstacle_x_range = (60,80)
-obstacle_y_range = (130,100)
-line_color = (255, 0, 0)
+# Create an obstacle line object
+obstacle_xpos = 175
+obstacle_ypos = 175
+obstacle_width = 115
+obstacle_height = 250
+obstacle_color = (255,0,0)
+obstacle = pygame.Rect(obstacle_xpos, obstacle_ypos, obstacle_width, obstacle_height)
 
 
 # Set the speed of movement
@@ -81,11 +83,9 @@ while running:
         yd=0
 
 
+    # next use rect.colliderect() to check if rectangles collide
 
     
-
-
-
     
 
 
@@ -96,7 +96,7 @@ while running:
     pygame.draw.rect(screen, player_color, player)
 
     # Draw the obstacle on the screen
-    pygame.draw.line(screen, line_color, obstacle_x_range, obstacle_y_range, obstacle_width)
+    pygame.draw.rect(screen, obstacle_color, obstacle)
 
     pygame.time.wait(5)
 
