@@ -9,9 +9,18 @@ screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("My First Pygame Game")
 
-# Create a rectangle object
-rect_size = 25
-rect = pygame.Rect(0, 0, rect_size, rect_size)
+# Create a player object
+player_size = 25
+player_color = (0,0,0)
+player = pygame.Rect(0, 0, player_size, player_size)
+
+
+# Create dimensions for a line object
+obstacle_width = 3
+obstacle_x_range = (60,80)
+obstacle_y_range = (130,100)
+line_color = (255, 0, 0)
+
 
 # Set the speed of movement
 speed = 1
@@ -22,8 +31,8 @@ yd = 0
 
 # Create a function for player movement
 def plr_mvmt(x_dir, y_dir):
-    rect.x = rect.x + x_dir
-    rect.y = rect.y + y_dir
+    player.x = player.x + x_dir
+    player.y = player.y + y_dir
 
 # Run the game loop
 running = True
@@ -55,20 +64,20 @@ while running:
                 yd = 0
 
 
-    
-    if 0 <= rect.x <= (screen_width - rect_size) and 0 <= rect.y <= (screen_height - rect_size):
+    #stop movement if the player hits the edge of the screen
+    if 0 <= player.x <= (screen_width - player_size) and 0 <= player.y <= (screen_height - player_size):
         plr_mvmt(x_dir = xd, y_dir = yd)
-    elif rect.x < 0 :
-        rect.x = 0 
+    elif player.x < 0 :
+        player.x = 0 
         xd=0
-    elif rect.y < 0 :
-        rect.y = 0 
+    elif player.y < 0 :
+        player.y = 0 
         yd=0
-    elif rect.x > (screen_width - rect_size):
-        rect.x = (screen_width - rect_size)
+    elif player.x > (screen_width - player_size):
+        player.x = (screen_width - player_size)
         xd=0
-    elif rect.y > (screen_height - rect_size):
-        rect.y = (screen_height - rect_size)
+    elif player.y > (screen_height - player_size):
+        player.y = (screen_height - player_size)
         yd=0
 
 
@@ -83,8 +92,11 @@ while running:
     # Fill the screen with a color
     screen.fill((255, 255, 255))
 
-    # Draw the rectangle on the screen
-    pygame.draw.rect(screen, (0, 0, 0), rect)
+    # Draw the player on the screen
+    pygame.draw.rect(screen, player_color, player)
+
+    # Draw the obstacle on the screen
+    pygame.draw.line(screen, line_color, obstacle_x_range, obstacle_y_range, obstacle_width)
 
     pygame.time.wait(5)
 
