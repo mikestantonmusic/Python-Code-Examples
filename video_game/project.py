@@ -10,11 +10,43 @@ screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("My First Pygame Game")
 
-# Create a player object
+# Create a moving object class
+class moving_obj(pygame.Rect):
+    def __init__(self, left, top, width, height, x_dir, y_dir):
+        super().__init__(left, top, width, height)
+        self.x_dir = x_dir
+        self.y_dir = y_dir
+
+
+    def move_random(self, iter):
+
+        new_x_dir=self.x_dir
+        new_y_dir=self.y_dir
+
+        if 0 <= self.left <= (screen_width - self.width) and 0 <= self.top <= (screen_height - self.height):
+            if random.randint(0, 100) == iter:
+                new_x_dir=-1*self.x_dir
+            if random.randint(0, 100) == iter:
+                new_y_dir=-1*self.y_dir
+
+        elif self.left < 0:
+            new_x_dir=-1*self.x_dir
+        elif self.top < 0:
+            new_y_dir=-1*self.y_dir
+        elif self.left > (screen_width - self.width):
+            new_x_dir=-1*self.x_dir
+        elif self.top > (screen_height - self.height):
+            new_y_dir=-1*self.y_dir
+
+        self.x_dir = new_x_dir
+        self.y_dir = new_y_dir
+
+        self.left = self.left + self.x_dir
+        self.top = self.top + self.y_dir
+
 player_size = 25
 player_color = (0,0,0)
 player = pygame.Rect(0, 0, player_size, player_size)
-
 
 # Create an obstacle object
 obstacle_xpos = 175
@@ -22,7 +54,7 @@ obstacle_ypos = 175
 obstacle_width = 115
 obstacle_height = 175
 obstacle_color = (255,0,0)
-obstacle = pygame.Rect(obstacle_xpos, obstacle_ypos, obstacle_width, obstacle_height)
+obstacle = moving_obj(obstacle_xpos, obstacle_ypos, obstacle_width, obstacle_height,1,1)
 
 # Create another obstacle object
 obstacle2_xpos = 275
@@ -30,10 +62,9 @@ obstacle2_ypos = 275
 obstacle2_width = 115
 obstacle2_height = 175
 obstacle2_color = (255,0,0)
-obstacle2 = pygame.Rect(obstacle2_xpos, obstacle2_ypos, obstacle2_width, obstacle2_height)
+obstacle2 = moving_obj(obstacle2_xpos, obstacle2_ypos, obstacle2_width, obstacle2_height,1,1)
 
 obstacle_list = [obstacle, obstacle2]
-
 
 # Create a target object
 target_xpos = 90
@@ -41,48 +72,22 @@ target_ypos = 175
 target_width = 25
 target_height = 25
 target_color = (0,255,0)
-target = pygame.Rect(target_xpos, target_ypos, target_width, target_height)
+target = moving_obj(target_xpos, target_ypos, target_width, target_height,1,1)
 
 target_list = [target]
 
-
+# set the end of game font
 game_over_font = pygame.font.Font(None, 36)
 
 # Set the speed of movement
 speed = 1
 
-# Set the starting point of movement
+# Set the starting point of player
 xd = 0
 yd = 0
 
-
-# NEXT - Create a class for all these functions!
-# Create a function for player movement
-def plr_mvmt(x_dir, y_dir):
-    player.x = player.x + x_dir
-    player.y = player.y + y_dir
-
-def obs_mvmt(x_dir, y_dir):
-    obstacle.x = obstacle.x + x_dir
-    obstacle.y = obstacle.y + y_dir
-
-def obs2_mvmt(x_dir, y_dir):
-    obstacle2.x = obstacle2.x + x_dir
-    obstacle2.y = obstacle2.y + y_dir
-
-def targ_mvmt(x_dir, y_dir):
-    target.x = target.x + x_dir
-    target.y = target.y + y_dir
-
 # Run the game loop
 i = 0
-obs_x_dir = 1
-obs_y_dir = 1
-obs2_x_dir = 1
-obs2_y_dir = 1
-tar_x_dir = 1
-tar_y_dir = 1
-
 
 running = True
 while running:
@@ -115,7 +120,8 @@ while running:
 
     #stop movement if the player hits the edge of the screen
     if 0 <= player.x <= (screen_width - player_size) and 0 <= player.y <= (screen_height - player_size):
-        plr_mvmt(x_dir = xd, y_dir = yd)
+        player.x = player.x + xd
+        player.y = player.y + yd
     elif player.x < 0 :
         player.x = 0 
         xd=0
@@ -129,54 +135,12 @@ while running:
         player.y = (screen_height - player_size)
         yd=0
 
-# Create a function for obstacle movement
+    # move the moving objects!
+    obstacle.move_random(i)
 
+    obstacle2.move_random(i)
 
-    if 0 <= obstacle.x <= (screen_width - obstacle_width) and 0 <= obstacle.y <= (screen_height - obstacle_height):
-        if random.randint(0, 100) == i:
-            obs_x_dir = -1*obs_x_dir
-        if random.randint(0, 100) == i:
-            obs_y_dir = -1*obs_y_dir
-    elif obstacle.x < 0:
-        obs_x_dir = -1*obs_x_dir
-    elif obstacle.y < 0 :
-        obs_y_dir = -1*obs_y_dir
-    elif obstacle.x > (screen_width - obstacle_width):
-        obs_x_dir = -1*obs_x_dir
-    elif obstacle.y > (screen_height - obstacle_height):
-        obs_y_dir = -1*obs_y_dir
-    obs_mvmt(obs_x_dir, obs_y_dir)
-
-    if 0 <= obstacle2.x <= (screen_width - obstacle2_width) and 0 <= obstacle2.y <= (screen_height - obstacle2_height):
-        if random.randint(0, 100) == i:
-            obs2_x_dir = -1*obs2_x_dir
-        if random.randint(0, 100) == i:
-            obs2_y_dir = -1*obs2_y_dir
-    elif obstacle2.x < 0:
-        obs2_x_dir = -1*obs2_x_dir
-    elif obstacle2.y < 0 :
-        obs2_y_dir = -1*obs2_y_dir
-    elif obstacle2.x > (screen_width - obstacle2_width):
-        obs2_x_dir = -1*obs2_x_dir
-    elif obstacle2.y > (screen_height - obstacle2_height):
-        obs2_y_dir = -1*obs2_y_dir
-    obs2_mvmt(obs2_x_dir, obs2_y_dir)
-
-
-    if 0 <= target.x <= (screen_width - target_width) and 0 <= target.y <= (screen_height - target_height):
-        if random.randint(0, 100) == i:
-            tar_x_dir = -1*tar_x_dir
-        if random.randint(0, 100) == i:
-            tar_y_dir = -1*tar_y_dir
-    elif target.x < 0:
-        tar_x_dir = -1*tar_x_dir
-    elif target.y < 0:
-        tar_y_dir = -1*tar_y_dir
-    elif target.x > (screen_width - target_width):
-        tar_x_dir = -1*tar_x_dir
-    elif target.y > (screen_height - target_height):
-        tar_y_dir = -1*tar_y_dir
-    targ_mvmt(tar_x_dir, tar_y_dir)
+    target.move_random(i)
 
 
     # next use rect.colliderect() to check if rectangles collide
